@@ -1,0 +1,119 @@
+@page "/Edit/Family/{Id:int}"
+@using Model
+@using Data
+@using Authorization
+@using Microsoft.AspNetCore.Components
+
+
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+@inject IFamilyService FamilyServices
+@inject NavigationManager NavigationManager
+
+
+        <h3>Edit family with id: @Id</h3>
+        <EditForm Model="@family" OnValidSubmit="@Save">
+            <DataAnnotationsValidator  />
+            <ValidationSummary/>
+            <div class="form-group">Street Name: <br />
+                <InputText @bind-Value="family.StreetName"></InputText>
+            </div>
+            <div class="form-group">House Number: <br />
+                <InputNumber @bind-Value="family.HouseNumber"></InputNumber>
+            </div>
+            <h3>Adults</h3>
+            @foreach (var adult in family.Adults)
+            {
+                <div class="form-group">First Name: <br />
+                    <InputText @bind-Value="adult.FirstName"></InputText>
+                </div>
+                <div class="form-group">Last Name: <br />
+                    <InputText @bind-Value="adult.LastName"></InputText>
+                </div>
+                <div class="form-group">Hair Color: <br />
+                    <InputText @bind-Value="adult.HairColor"></InputText>
+                </div>
+                <div class="form-group">Eye Color: <br />
+                    <InputText @bind-Value="adult.EyeColor"></InputText>
+                </div>
+                <div class="form-group">Weight: <br />
+                    <InputNumber @bind-Value="adult.Weight"></InputNumber>
+                </div>
+                <div class="form-group">Height: <br />
+                    <InputNumber @bind-Value="adult.Height"></InputNumber>
+                </div>
+                <div class="form-group">Age: <br />
+                    <InputNumber @bind-Value="adult.Age"></InputNumber>
+                </div>
+                <div class="form-group">Sex: <br />
+                    <InputText @bind-Value="adult.Sex"></InputText>
+                </div>
+                <div class="form-group">Job Title: <br />
+                    <InputText @bind-Value="adult.JobTitle.JobTitle"></InputText>
+                </div>
+                <div class="form-group">Salary: <br />
+                    <InputNumber @bind-Value="adult.JobTitle.Salary"></InputNumber>
+                </div>
+            }
+            <h3>Children</h3>
+            @foreach (var child in family.Children)
+            {
+                <div class="form-group">First Name: <br />
+                    <InputText @bind-Value="child.FirstName"></InputText>
+                </div>
+                <div class="form-group">Last Name: <br />
+                    <InputText @bind-Value="child.LastName"></InputText>
+                </div>
+                <div class="form-group">Hair Color: <br />
+                    <InputText @bind-Value="child.HairColor"></InputText>
+                </div>
+                <div class="form-group">Eye Color: <br />
+                    <InputText @bind-Value="child.EyeColor"></InputText>
+                </div>
+                <div class="form-group">Weight: <br />
+                    <InputNumber @bind-Value="child.Weight"></InputNumber>
+                </div>
+                <div class="form-group">Height: <br />
+                    <InputNumber @bind-Value="child.Height"></InputNumber>
+                </div>
+                <div class="form-group">Age: <br />
+                    <InputNumber @bind-Value="child.Age"></InputNumber>
+                </div>
+                <div class="form-group">Sex: <br />
+                    <InputText @bind-Value="child.Sex"></InputText>
+                </div>
+            }
+            <h3>Pets</h3>
+            @foreach (var pet in family.Pets)
+            {
+                <div class="form-group">Name: <br />
+                    <InputText @bind-Value="pet.Name"></InputText>
+                </div>
+                <div class="form-group">Age: <br />
+                    <InputNumber @bind-Value="pet.Age"></InputNumber>
+                </div>
+                <div class="form-group">Species: <br />
+                    <InputText @bind-Value="pet.Species"></InputText>
+                </div>
+            }
+            <p class="actions">
+                <button class="btn btn-outline-dark" type="submit">Save</button>
+            </p>
+        </EditForm>
+
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+    private Family family;
+    protected override async Task OnInitializedAsync()
+    {
+        IList<Family> f = FamilyServices.Families;
+        family = f.First(adul => adul.Id == Id);
+    }
+    private async Task Save()
+    {
+        await FamilyServices.EditFamily(family);
+        NavigationManager.NavigateTo($"/View/{Id}");
+    }
+}

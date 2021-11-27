@@ -1,0 +1,67 @@
+@page "/addChildTo/{Id:int}"
+@using Model
+@using Data
+@using Authorization
+
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+@inject IFamilyService FamiliServices
+@inject NavigationManager NavigationManager
+
+<h3>Add Child To:</h3>
+<h5>@family.StreetName @family.HouseNumber</h5>
+
+
+        <EditForm Model="@child" OnValidSubmit="@AddNewChild">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <div class="form-group">First Name: <br />
+                <InputText @bind-Value="child.FirstName"></InputText>
+            </div>
+            <div class="form-group">Last Name: <br />
+                <InputText @bind-Value="child.LastName"></InputText>
+            </div>
+            <div class="form-group">Hair Color: <br />
+                <InputText @bind-Value="child.HairColor"></InputText>
+            </div>
+            <div class="form-group">Eye Color: <br />
+                <InputText @bind-Value="child.EyeColor"></InputText>
+            </div>
+            <div class="form-group">Weight: <br />
+                <InputNumber @bind-Value="child.Weight"></InputNumber>
+            </div>
+            <div class="form-group">Height: <br />
+                <InputNumber @bind-Value="child.Height"></InputNumber>
+            </div>
+            <div class="form-group">Age: <br />
+                <InputNumber @bind-Value="child.Age"></InputNumber>
+            </div>
+            <div class="form-group">Sex: <br />
+                <InputText @bind-Value="child.Sex"></InputText>
+            </div>
+            <p class="actions">
+                <button class="btn btn-outline-dark" type="submit">Create</button>
+            </p>
+        </EditForm>
+
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+    private Child child = new();
+    private Family family = new();
+    protected override async Task OnInitializedAsync()
+    {
+        IList<Family> f = await FamiliServices.GetFamilies();
+        family = f.First(adul => adul.Id == Id);
+        
+    }
+    private async Task AddNewChild()
+    {
+        child.Id = 0;
+        child.Interests = new();
+        child.Pets = new();
+        await FamiliServices.AddChildToFamily(Id, child);
+        NavigationManager.NavigateTo($"/View/{Id}");
+    }
+}

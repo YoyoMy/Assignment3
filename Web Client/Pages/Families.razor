@@ -1,0 +1,114 @@
+@page "/families"
+@using Data
+@using Model
+@using Authorization
+
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IFamilyService FamilyServices
+@inject NavigationManager NavigationManager
+
+<h1>Families</h1>
+<AuthorizeView>
+    <Authorized>
+        <p>Filter by street name: <input class="input-group-text" type="text"
+                @oninput="@((arg) => FilterByStreetName(arg))" /></p>
+
+        @if (filtered == null)
+        {
+            <p> <em>Loading...</em> </p>
+        }
+        else if (!filtered.Any())
+        {
+            <p> <em>No Adults exist. Please
+                    add some.</em> </p>
+        }
+        else
+        {
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Street name</th>
+                        <th>№</th>
+                        <th>Adults</th>
+                        <th>Children</th>
+                        <th>Pets</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in filtered)
+                    {
+                        <tr>
+                            <td>@item?.Id</td>
+                            <td>@item?.StreetName</td>
+                            <td>@item?.HouseNumber</td>
+                            <td>@item?.Adults.Count</td>
+                            <td>@item?.Children.Count</td>
+                            <td>@item?.Pets.Count</td>
+                            <td><button @onclick="@(() => View(item.Id))" class="btn btn-light">
+                                    <i class="oi oi-spreadsheet" style="color: #1b6ec2" />
+                                </button></td>
+                            <td>
+                                <button @onclick="@(() => Edit(item.Id))" class="btn btn-light">
+                                    <i class="oi oi-pencil" style="color: #1b6ec2" />
+                                </button>
+                            </td>
+                            <td>
+                                <button @onclick="@(() => Remove(item.Id))" class="btn btn-light">
+                                    <i class="oi oi-trash" style="color:red" />
+                                </button>
+                            </td>
+                        </tr>
+
+                    }
+                </tbody>
+            </table>
+        }
+    </Authorized>
+</AuthorizeView>
+@code {
+    IList<Family> families { get; set; }
+    IList<Family> filtered { get; set; }
+    private bool filteredByName { get; set; }
+    private string filter { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        families = await FamilyServices.GetFamilies();
+        filtered = families;
+        filteredByName = false;
+    }
+
+    private async Task FilterByStreetName(ChangeEventArgs changeEventArgs)
+    {
+        filteredByName = true;
+        filter = changeEventArgs.Value.ToString();
+        if (filter.Equals("") || filter.Equals(" "))
+        {
+            filtered = families;
+
+        }
+        ExecuteFilters();
+    }
+    private async Task ExecuteFilters()
+    {
+        filtered = families.Where(t => (t.StreetName.Contains(filter) && filteredByName || !filteredByName)).ToList();
+    }
+
+    private async Task Edit(int Id)
+    {
+        NavigationManager.NavigateTo($"/Edit/Family/{Id}");
+    }
+
+    private async Task View(int family)
+    {
+        NavigationManager.NavigateTo($"/View/{family}");
+    }
+    private async Task Remove(int Id)
+    {
+        Family toRemove = families.First(ad => ad.Id == Id);
+        families.Remove(toRemove);
+        filtered.Remove(toRemove);
+        await FamilyServices.RemoveFamily(toRemove);
+    }
+}

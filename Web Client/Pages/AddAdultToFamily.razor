@@ -1,0 +1,74 @@
+@page "/addAdultTo/{Id:int}"
+@using Model
+@using Data
+@using Authorization
+
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+@inject IFamilyService FamiliServices
+@inject NavigationManager NavigationManager
+
+<h3>Add Adult To:</h3>
+<h5>@family.StreetName @family.HouseNumber</h5>
+
+
+        <EditForm Model="@newAdult" OnValidSubmit="@AddNewAdult">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <div class="form-group">First Name: <br />
+                <InputText @bind-Value="newAdult.FirstName"></InputText>
+            </div>
+            <div class="form-group">Last Name: <br />
+                <InputText @bind-Value="newAdult.LastName"></InputText>
+            </div>
+            <div class="form-group">Hair Color: <br />
+                <InputText @bind-Value="newAdult.HairColor"></InputText>
+            </div>
+            <div class="form-group">Eye Color: <br />
+                <InputText @bind-Value="newAdult.EyeColor"></InputText>
+            </div>
+            <div class="form-group">Weight: <br />
+                <InputNumber @bind-Value="newAdult.Weight"></InputNumber>
+            </div>
+            <div class="form-group">Height: <br />
+                <InputNumber @bind-Value="newAdult.Height"></InputNumber>
+            </div>
+            <div class="form-group">Age: <br />
+                <InputNumber @bind-Value="newAdult.Age"></InputNumber>
+            </div>
+            <div class="form-group">Sex: <br />
+                <InputText @bind-Value="newAdult.Sex"></InputText>
+            </div>
+            <div class="form-group">Job Title: <br />
+                <InputText @bind-Value="newAdult.JobTitle.JobTitle"></InputText>
+            </div>
+            <div class="form-group">Salary: <br />
+                <InputNumber @bind-Value="newAdult.JobTitle.Salary"></InputNumber>
+            </div>
+            <p class="actions">
+                <button class="btn btn-outline-dark" type="submit">Create</button>
+            </p>
+        </EditForm>
+
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private Adult newAdult = new();
+    private Job job = new();
+    private Family family = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        newAdult.JobTitle = job;
+        IList<Family> f = await FamiliServices.GetFamilies();
+        family = f.FirstOrDefault(adul => adul.Id == Id);
+    }
+    private async Task AddNewAdult()
+    {
+        newAdult.Id = 0;
+        await FamiliServices.AddAdultToFamily(Id, newAdult);
+        NavigationManager.NavigateTo($"/View/{Id}");
+    }
+}

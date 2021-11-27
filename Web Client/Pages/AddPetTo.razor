@@ -1,0 +1,52 @@
+@page "/addPetTo/{Id:int}"
+@using Model
+@using Data
+@using Authorization
+
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+@inject IFamilyService FamiliServices
+@inject NavigationManager NavigationManager
+
+<h3>Add Child To:</h3>
+<h5>@family.StreetName @family.HouseNumber</h5>
+
+
+        <EditForm Model="pet" OnValidSubmit="@AddNewPet">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <div class="form-group">Name: <br />
+                <InputText @bind-Value="pet.Name"></InputText>
+            </div>
+            <div class="form-group">Species: <br />
+                <InputText @bind-Value="pet.Species"></InputText>
+            </div>
+            <div class="form-group">Age: <br />
+                <InputNumber @bind-Value="pet.Age"></InputNumber>
+            </div>
+            <p class="actions">
+                <button class="btn btn-outline-dark" type="submit">Create</button>
+            </p>
+        </EditForm>
+
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+    private Pet pet = new();
+    private Family family = new();
+    protected override async Task OnInitializedAsync()
+    {
+        IList<Family> f = await FamiliServices.GetFamilies();
+        family = f.First(adul => adul.Id == Id);
+        
+    }
+    private async Task AddNewPet()
+    {
+        pet.Id = 0;
+        /*family.Pets.Add(pet);
+        await FamiliServices.EditFamily(family);*/
+        await FamiliServices.AddPetToFamily(Id, pet);
+        NavigationManager.NavigateTo($"/View/{Id}");
+    }
+}

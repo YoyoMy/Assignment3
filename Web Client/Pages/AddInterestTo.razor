@@ -1,0 +1,48 @@
+@page "/{famId:int}/addInterestTo/{Id:int}"
+@using Model
+@using Data
+@using Authorization
+
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+@inject IFamilyService FamiliServices
+@inject NavigationManager NavigationManager
+
+<h3>Add Interest:</h3>
+
+
+        <EditForm Model="@interest" OnValidSubmit="@AddNewInterest">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <div class="form-group">Type: <br />
+                <InputText @bind-Value="interest.Type"></InputText>
+            </div>
+            <div class="form-group">Description: <br />
+                <InputTextArea @bind-Value="interest.Description"></InputTextArea>
+            </div>
+            <p class="actions">
+                <button class="btn btn-outline-dark" type="submit">Create</button>
+            </p>
+        </EditForm>
+
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+    [Parameter]
+    public int famId { get; set; }
+
+    private Interest interest = new ();
+    private Child child = new();
+    protected override async Task OnInitializedAsync()
+    {
+        child = await FamiliServices.GetChild(Id);
+    }
+    private async Task AddNewInterest()
+    {
+        interest.Id = 0;
+        child.Interests.Add(interest);
+        await FamiliServices.AddInterestToChild(famId, Id, interest);
+        NavigationManager.NavigateTo($"/View/{famId}");
+    }
+}

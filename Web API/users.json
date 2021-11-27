@@ -1,0 +1,79 @@
+[
+  {
+    "Username": "Yoyo",
+    "Password": "Yoyo123",
+    "FirstName": "Yoana",
+    "LastName": "Miteva",
+    "Role": "Admin"
+  },
+  {
+    "Username": "Bob",
+    "Password": "Bob123",
+    "FirstName": "Bob",
+    "LastName": "Bob",
+    "Role": "User"
+  },
+  {
+    "Username": "Marty",
+    "Password": "Marty123",
+    "FirstName": "Martin",
+    "LastName": "Tsvetkov",
+    "Role": "Admin"
+  },
+  {
+    "Username": "Robie",
+    "Password": "Robie123",
+    "FirstName": "Rob",
+    "LastName": "Rob",
+    "Role": "User"
+  },
+  {
+    "Username": "Koko",
+    "Password": "Koko123",
+    "FirstName": "Koko",
+    "LastName": "Koko",
+    "Role": "User"
+  },
+  {
+    "Username": "Gogo",
+    "Password": "Gogo123",
+    "FirstName": "Gog",
+    "LastName": "Gogo",
+    "Role": "User"
+  },
+  {
+    "Username": "ghjk",
+    "Password": "ghjk1",
+    "FirstName": "bob",
+    "LastName": "bobg",
+    "Role": "User"
+  },
+  {
+    "Username": "lolo",
+    "Password": "lolo123",
+    "FirstName": "lolo",
+    "LastName": "lolo",
+    "Role": "User"
+  },
+  {
+    "Username": "momo",
+    "Password": "momo123",
+    "FirstName": "momo",
+    "LastName": "momo",
+    "Role": "User"
+  },
+  {
+    "Username": "lilac",
+    "Password": "lilac123",
+    "FirstName": "Lilac",
+    "LastName": "Lilac",
+    "Role": "User"
+  },
+  {
+    "Username": "lily",
+    "Password": "lilyrose",
+    "FirstName": "Lily",
+    "LastName": "Rose",
+    "Role": "User"
+  }
+]
